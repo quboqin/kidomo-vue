@@ -1,22 +1,43 @@
 <template>
   <div>
-    <div class="title-bar">
-      <button @click="goBack">&lt; Back</button>
-      <h2>Task Detail</h2>
-      <div class="action-buttons">
-        <button @click="confirmAction">Confirm</button>
-        <button @click="deleteAction">Delete</button>
+    <div class="flex items-center justify-between p-4 bg-gray-200">
+      <button class="text-blue-500" @click="goBack">&lt; Back</button>
+      <h2 class="text-lg font-semibold">Task Detail</h2>
+      <div class="flex space-x-2">
+        <button
+          class="flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+          @click="confirmAction"
+        >
+          <ConfirmIcon />
+        </button>
+        <button
+          class="flex items-center justify-center w-6 h-6 text-white bg-red-500 rounded-full hover:bg-red-600"
+          @click="deleteAction"
+        >
+          <DeleteIcon />
+        </button>
       </div>
     </div>
     <!-- Task details go here -->
-    <div class="input-section">
-      <div class="input-group">
-        <label for="title">Title:</label>
-        <input id="title" v-model="taskTitle" type="text" placeholder="Enter title" />
+    <div class="p-4">
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-medium" for="title">Title:</label>
+        <input
+          class="w-full px-3 py-2 border rounded"
+          id="title"
+          v-model="taskTitle"
+          type="text"
+          placeholder="Enter title"
+        />
       </div>
-      <div class="input-group">
-        <label for="detail">Detail:</label>
-        <textarea id="detail" v-model="taskDetail" placeholder="Enter detail"></textarea>
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-medium" for="detail">Detail:</label>
+        <textarea
+          class="w-full px-3 py-2 border rounded"
+          id="detail"
+          v-model="taskDetail"
+          placeholder="Enter detail"
+        ></textarea>
       </div>
     </div>
   </div>
@@ -27,8 +48,14 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useTaskStore } from '@/stores'
 
+import DeleteIcon from '@/components/icons/IconDelete.vue'
+import ConfirmIcon from '@/components/icons/IconConfirm.vue'
+
 const router = useRouter()
 const route = useRoute()
+
+var taskId = +route.params.id
+
 const taskTitle = ref('')
 const taskDetail = ref('')
 
@@ -38,16 +65,37 @@ function goBack() {
   router.back()
 }
 
-function confirmAction() {
+async function confirmAction() {
   // Implement the confirm action logic here
+  if (taskId === 0) {
+    const newId = taskStore.calculateNewId()
+    const newTask = {
+      id: newId,
+      title: taskTitle.value,
+      detail: taskDetail.value,
+      completed: false
+    }
+    taskStore.appendTask(newTask)
+    goBack()
+  } else {
+    const updatedTask = {
+      id: taskId,
+      title: taskTitle.value,
+      detail: taskDetail.value,
+      completed: false
+    }
+    await taskStore.updateTask(updatedTask)
+    goBack()
+  }
 }
 
 function deleteAction() {
   // Implement the delete action logic here
+  taskStore.deleteTaskById(taskId)
+  goBack()
 }
 
 async function fetchAndSetTaskDetails() {
-  const taskId = +route.params.id
   if (taskId !== 0) {
     const task = taskStore.fetchTaskById(taskId)
     taskTitle.value = task!.title
@@ -62,30 +110,4 @@ async function fetchAndSetTaskDetails() {
 onMounted(fetchAndSetTaskDetails)
 </script>
 
-<style scoped>
-.title-bar {
-  display: flex;
-  background-color: #f0f0f0;
-  align-items: center;
-}
-
-.title-bar button {
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-.action-buttons button {
-  margin-left: 10px; /* Space between buttons */
-}
-
-.input-section .input-group {
-  margin-bottom: 20px;
-}
-
-.input-section .input-group label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* Add more styles for TaskDetail as needed */
-</style>
+<style scoped></style>
