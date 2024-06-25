@@ -3,34 +3,31 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
-
+import AddIcon from '@/components/icons/IconAdd.vue'
 import { useTaskStore } from '@/stores'
-import type { Task } from '@/models'
+import type { Task } from '@/stores/task'
 import TaskItem from '@/components/TaskItem.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
 const tasks = ref<Task[]>([])
 
+const showMenu = ref(false)
+const showConfirmationDialog = ref(false)
+
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
 })
 
-function navigateToDetail() {
-  router.push({ path: `/task/0` }) // Use the route name or path to navigate
+const navigateToDetail = () => {
+  router.push({ path: '/task/0' }) // Use the route name or path to navigate
 }
-
-const showMenu = ref(false)
-const showConfirmationDialog = ref(false)
 
 const toggleMenu = () => {
   showMenu.value = !showMenu.value
 }
 
 const clearAllTasks = () => {
-  // Logic to clear all tasks
-  console.log('Clearing all tasks...')
-  // Close the menu after action
   showMenu.value = false
   showConfirmationDialog.value = true
 }
@@ -41,7 +38,7 @@ const confirmClearAllTasks = async () => {
   showConfirmationDialog.value = false
 }
 
-async function handleCheckboxChange(checked: boolean, taskId: number) {
+const handleCheckboxChange = async (checked: boolean, taskId: number) => {
   console.log(`Checkbox for task ${taskId} changed to ${checked}`)
   await taskStore.updateTaskCompletedStatus(taskId, checked)
 }
@@ -113,9 +110,10 @@ async function handleCheckboxChange(checked: boolean, taskId: number) {
       class="fixed bottom-4 right-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full"
       @click="navigateToDetail"
     >
-      Add
+      <AddIcon />
     </button>
   </div>
 </template>
 
 <style scoped></style>
+@/views

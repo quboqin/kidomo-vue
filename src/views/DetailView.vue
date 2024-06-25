@@ -1,7 +1,77 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useTaskStore } from '@/stores'
+
+import DeleteIcon from '@/components/icons/IconDelete.vue'
+import ConfirmIcon from '@/components/icons/IconConfirm.vue'
+import BackIcon from '@/components/icons/IconBack.vue'
+import CrossIcon from '@/components/icons/IconCross.vue'
+
+const router = useRouter()
+const route = useRoute()
+
+const taskId = +route.params.id
+const taskTitle = ref('')
+const taskDetail = ref('')
+const taskCompleted = ref(false)
+
+const taskStore = useTaskStore()
+
+const goBack = () => {
+  router.back()
+}
+
+const confirmAction = async () => {
+  if (taskId === 0) {
+    const newId = await taskStore.calculateNewId()
+    const newTask = {
+      id: newId,
+      title: taskTitle.value,
+      detail: taskDetail.value,
+      completed: false
+    }
+    await taskStore.appendTask(newTask)
+  } else {
+    const updatedTask = {
+      id: taskId,
+      title: taskTitle.value,
+      detail: taskDetail.value,
+      completed: taskCompleted.value
+    }
+    await taskStore.updateTask(updatedTask)
+  }
+  goBack()
+}
+
+const deleteAction = async () => {
+  await taskStore.deleteTaskById(taskId)
+  goBack()
+}
+
+const fetchAndSetTaskDetails = async () => {
+  if (taskId !== 0) {
+    const task = await taskStore.fetchTaskById(taskId)
+    taskTitle.value = task!.title
+    taskDetail.value = task!.detail!
+    taskCompleted.value = task!.completed
+  } else {
+    taskTitle.value = ''
+    taskDetail.value = ''
+    taskCompleted.value = false
+  }
+}
+
+onMounted(fetchAndSetTaskDetails)
+</script>
+
 <template>
   <div>
     <div class="flex items-center justify-between p-4 bg-gray-200">
-      <button class="text-blue-500" @click="goBack">&lt; Back</button>
+      <!-- Back arrow icon when taskId is 0 -->
+      <button v-if="taskId === 0" @click="goBack" class="back-button"><BackIcon /></button>
+      <!-- Cross icon when taskId is greater than 0 -->
+      <button v-else @click="goBack" class="back-button"><CrossIcon /></button>
       <h2 class="text-lg font-semibold">Task Detail</h2>
       <div class="flex space-x-2">
         <button
@@ -42,75 +112,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useTaskStore } from '@/stores'
-
-import DeleteIcon from '@/components/icons/IconDelete.vue'
-import ConfirmIcon from '@/components/icons/IconConfirm.vue'
-
-const router = useRouter()
-const route = useRoute()
-
-var taskId = +route.params.id
-
-const taskTitle = ref('')
-const taskDetail = ref('')
-const taskCompleted = ref(false)
-
-const taskStore = useTaskStore()
-
-function goBack() {
-  router.back()
-}
-
-async function confirmAction() {
-  // Implement the confirm action logic here
-  if (taskId === 0) {
-    const newId = taskStore.calculateNewId()
-    const newTask = {
-      id: newId,
-      title: taskTitle.value,
-      detail: taskDetail.value,
-      completed: false
-    }
-    taskStore.appendTask(newTask)
-    goBack()
-  } else {
-    const updatedTask = {
-      id: taskId,
-      title: taskTitle.value,
-      detail: taskDetail.value,
-      completed: taskCompleted.value
-    }
-    await taskStore.updateTask(updatedTask)
-    goBack()
-  }
-}
-
-function deleteAction() {
-  // Implement the delete action logic here
-  taskStore.deleteTaskById(taskId)
-  goBack()
-}
-
-async function fetchAndSetTaskDetails() {
-  if (taskId !== 0) {
-    const task = taskStore.fetchTaskById(taskId)
-    taskTitle.value = task!.title
-    taskDetail.value = task!.detail!
-    taskCompleted.value = task!.completed
-  } else {
-    taskTitle.value = ''
-    taskDetail.value = ''
-    taskCompleted.value = false
-  }
-}
-
-// Fetch task details when component is mounted
-onMounted(fetchAndSetTaskDetails)
-</script>
 
 <style scoped></style>
