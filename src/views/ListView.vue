@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
@@ -15,7 +15,12 @@ const tasks = ref<Task[]>([])
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
 
+// Access the global instance to use globalLogger
+const instance = getCurrentInstance()
+const globalLogger = instance?.appContext.config.globalProperties.$globalLogger
+
 onMounted(async () => {
+  globalLogger?.('Tasks have been loaded') // Use globalLogger
   tasks.value = await taskStore.getAllTasks()
 })
 
