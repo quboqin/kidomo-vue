@@ -8,6 +8,7 @@
       <input
         type="checkbox"
         class="form-checkbox h-6 w-6 text-green-500"
+        :checked="task?.completed"
         @change="onCheckboxChange($event, task?.id)"
       />
     </span>
@@ -22,9 +23,11 @@ defineProps({
   task: Object as () => Task
 })
 
+const emit = defineEmits(['checkbox-change'])
+
 const onCheckboxChange = (event: any, taskId: number | undefined) => {
-  // Handle the change event, e.g., update task status
-  console.log(`Checkbox for task ${taskId} changed to ${event.target.checked}`)
+  const target = event.target as HTMLInputElement
+  emit('checkbox-change', target.checked, taskId)
 }
 </script>
 

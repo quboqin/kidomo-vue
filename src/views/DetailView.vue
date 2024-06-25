@@ -58,6 +58,7 @@ var taskId = +route.params.id
 
 const taskTitle = ref('')
 const taskDetail = ref('')
+const taskCompleted = ref(false)
 
 const taskStore = useTaskStore()
 
@@ -82,7 +83,7 @@ async function confirmAction() {
       id: taskId,
       title: taskTitle.value,
       detail: taskDetail.value,
-      completed: false
+      completed: taskCompleted.value
     }
     await taskStore.updateTask(updatedTask)
     goBack()
@@ -100,9 +101,11 @@ async function fetchAndSetTaskDetails() {
     const task = taskStore.fetchTaskById(taskId)
     taskTitle.value = task!.title
     taskDetail.value = task!.detail!
+    taskCompleted.value = task!.completed
   } else {
     taskTitle.value = ''
     taskDetail.value = ''
+    taskCompleted.value = false
   }
 }
 

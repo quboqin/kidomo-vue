@@ -52,6 +52,15 @@ export const useTaskStore = defineStore('task', {
     },
     deleteTaskById(taskId: number): void {
       this.tasks = this.tasks.filter((task) => task.id !== taskId)
+    },
+    async updateTaskCompletedStatus(taskId: number, completed: boolean): Promise<void> {
+      const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
+      if (taskIndex !== -1) {
+        this.tasks[taskIndex].completed = completed
+        console.log(`Task ${taskId} completed status updated to ${completed}`)
+      } else {
+        console.error(`Task with ID ${taskId} not found.`)
+      }
     }
   }
 })

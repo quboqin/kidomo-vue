@@ -40,6 +40,11 @@ const confirmClearAllTasks = async () => {
   tasks.value = []
   showConfirmationDialog.value = false
 }
+
+async function handleCheckboxChange(checked: boolean, taskId: number) {
+  console.log(`Checkbox for task ${taskId} changed to ${checked}`)
+  await taskStore.updateTaskCompletedStatus(taskId, checked)
+}
 </script>
 
 <template>
@@ -95,7 +100,12 @@ const confirmClearAllTasks = async () => {
 
     <div class="task-list pt-16">
       <ul class="list-none m-0 p-0">
-        <TaskItem v-for="task in tasks" :key="task.id" :task="task" />
+        <TaskItem
+          @checkbox-change="handleCheckboxChange"
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+        />
       </ul>
     </div>
 
