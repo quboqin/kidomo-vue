@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import '@/assets/tailwind.css'
 
 import { createApp } from 'vue'
@@ -8,13 +9,13 @@ import router from './router'
 
 const app = createApp(App)
 
-// Define your global function
-function globalLogger(message: string) {
-  console.log(`[Global Logger]: ${message}`)
+window.callbackFromKotlin = function (jsonObject: any) {
+  alert('jsonObject.key1')
 }
 
-// Add the function to globalProperties
-app.config.globalProperties.$globalLogger = globalLogger
+function showActionSheet() {
+  Android.showActionSheet(true)
+}
 
 app.use(createPinia())
 app.use(router)

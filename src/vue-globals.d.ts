@@ -5,3 +5,5 @@ declare module '@vue/runtime-core' {
     $globalLogger: (message: string) => void
   }
 }
+
+declare let Android: any

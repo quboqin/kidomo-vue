@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, getCurrentInstance } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
+import HomeIcon from '@/components/icons/IconHome.vue'
 import { useTaskStore } from '@/stores'
 import type { Task } from '@/stores/task'
 import TaskItem from '@/components/TaskItem.vue'
@@ -15,17 +16,26 @@ const tasks = ref<Task[]>([])
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
 
-// Access the global instance to use globalLogger
-const instance = getCurrentInstance()
-const globalLogger = instance?.appContext.config.globalProperties.$globalLogger
-
 onMounted(async () => {
-  globalLogger?.('Tasks have been loaded') // Use globalLogger
   tasks.value = await taskStore.getAllTasks()
 })
 
 const navigateToDetail = () => {
-  router.push({ path: '/task/0' }) // Use the route name or path to navigate
+  router.push({ path: '/task/0' })
+}
+
+const navigateToHome = () => {
+  const jsonObject = {
+    action: 'back',
+    data: {
+      source: 'index.html'
+    },
+    callback: 'callbackFromKotlin'
+  }
+
+  const backString = JSON.stringify(jsonObject)
+
+  Android.callFromJavascript(backString)
 }
 
 const toggleMenu = () => {
@@ -54,6 +64,9 @@ const handleCheckboxChange = async (checked: boolean, taskId: number) => {
     <header
       class="fixed top-0 left-0 w-full bg-blue-500 p-4 z-10 flex justify-between items-center"
     >
+      <button @click="navigateToHome" class="p-2 bg-blue-500 text-white rounded">
+        <HomeIcon />
+      </button>
       <h1 class="text-white text-lg font-bold text-center">Task List</h1>
       <button @click="toggleMenu" class="p-2 bg-blue-500 text-white rounded">
         <MoreIcon />
