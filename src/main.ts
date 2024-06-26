@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import WebBridge from './utils/web_bridge'
+import WebBridge from './utils/web-bridge'
 
 const app = createApp(App)
 
