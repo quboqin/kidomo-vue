@@ -2,6 +2,24 @@ import { defineStore } from 'pinia'
 import type { Task } from './task'
 import data from './data.json'
 
+export const systemInfoStore = defineStore('systemInfo', {
+  state: () => ({
+    appName: 'Task Manager',
+    operatingSystem: 'unknown'
+  }),
+  actions: {
+    async getAppName(): Promise<string> {
+      return this.appName
+    },
+    getOperatingSystem(): string {
+      return this.operatingSystem
+    },
+    async setOperatingSystem(os: string): Promise<void> {
+      this.operatingSystem = os
+    }
+  }
+})
+
 export const useTaskStore = defineStore('task', {
   state: () => ({
     tasks: data as Task[]

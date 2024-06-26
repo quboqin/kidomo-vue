@@ -5,16 +5,19 @@ import { useRouter } from 'vue-router'
 import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
-import { useTaskStore } from '@/stores'
+import { useTaskStore, systemInfoStore } from '@/stores'
 import type { Task } from '@/stores/task'
 import TaskItem from '@/components/TaskItem.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
+const sysInfoStore = systemInfoStore()
 const tasks = ref<Task[]>([])
 
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
+
+const operatingSystem = ref('unknown')
 
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
@@ -24,18 +27,22 @@ const navigateToDetail = () => {
   router.push({ path: '/task/0' })
 }
 
-const navigateToHome = () => {
+const navigateToHome = async () => {
   const jsonObject = {
     action: 'back',
     data: {
       source: 'index.html'
     },
-    callback: 'callbackFromKotlin'
+    callback: operatingSystem.value === 'Android' ? 'callbackFromKotlin' : 'callbackFromSwift'
   }
-
-  const backString = JSON.stringify(jsonObject)
-
-  Android.callFromJavascript(backString)
+  const os = sysInfoStore.getOperatingSystem()
+  if (os === 'Android') {
+    Android.callFromJavascript(JSON.stringify(jsonObject))
+  } else if (os === 'iOS') {
+    window.webkit.messageHandlers.Callback.postMessage(jsonObject)
+  } else {
+    router.push({ path: '/' })
+  }
 }
 
 const toggleMenu = () => {
@@ -67,7 +74,7 @@ const handleCheckboxChange = async (checked: boolean, taskId: number) => {
       <button @click="navigateToHome" class="p-2 bg-blue-500 text-white rounded">
         <HomeIcon />
       </button>
-      <h1 class="text-white text-lg font-bold text-center">Task List</h1>
+      <h1 class="text-white text-lg font-bold text-center">Task List {{ operatingSystem }}</h1>
       <button @click="toggleMenu" class="p-2 bg-blue-500 text-white rounded">
         <MoreIcon />
       </button>

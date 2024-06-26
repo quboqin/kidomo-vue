@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ComponentCustomProperties } from 'vue'
 
 declare module '@vue/runtime-core' {
@@ -6,4 +7,11 @@ declare module '@vue/runtime-core' {
   }
 }
 
-declare let Android: any
+declare global {
+  interface Window {
+    callbackFromSwift: (jsonObject: any) => void
+    callbackFromKotlin: (jsonObject: any) => void
+  }
+}
+
+declare const Android: any
