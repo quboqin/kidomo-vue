@@ -3,14 +3,14 @@ import type { App } from 'vue'
 import { systemInfoStore } from '@/stores'
 
 window.callbackFromKotlin = function (jsonObject: any) {
-  alert('callbackFromKotlin')
+  alert(`callbackFromKotlin: ${JSON.stringify(jsonObject)}`)
 }
 
 window.callbackFromSwift = function (jsonObject: any) {
-  alert('callbackFromSwift')
+  alert(`callbackFromSwift:${JSON.stringify(jsonObject)}`)
 }
 
-function showActionSheet() {
+export function showActionSheet() {
   Android.showActionSheet(true)
 }
 
@@ -48,7 +48,7 @@ class WebBridge {
     app.config.globalProperties.$webBridge = webBridge
 
     // Optionally, provide the WebBridge instance through provide/inject mechanism
-    app.provide('webBridge', webBridge)
+    // app.provide('webBridge', webBridge)
 
     app.config.globalProperties.$callNativeFunction = webBridge.callNativeFunction.bind(webBridge)
 
@@ -56,5 +56,4 @@ class WebBridge {
   }
 }
 
-// Export WebBridge as a plugin
 export default WebBridge

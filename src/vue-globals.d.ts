@@ -11,7 +11,7 @@ declare global {
   interface Window {
     callbackFromSwift: (jsonObject: any) => void
     callbackFromKotlin: (jsonObject: any) => void
+    webkit: any
   }
+  const Android: any
 }
-
-declare const Android: any
