@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-console.time('Conversion time')
+console.time('conversion time')
 const distPath = './dist/index.html'
 let htmlText = fs.readFileSync(distPath, 'utf8')
 let resultText = ''
@@ -12,4 +12,4 @@ htmlArr.forEach((str) => {
   if (!/type="module"/i.test(str)) resultText += str
 })
 fs.writeFileSync(distPath, resultText, 'utf8')
-console.timeEnd('Conversion time')
+console.timeEnd('conversion time')

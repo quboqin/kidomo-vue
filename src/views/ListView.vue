@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
-import { useTaskStore, systemInfoStore } from '@/stores'
+import { useTaskStore } from '@/stores'
 import type { Task } from '@/stores/task'
 import TaskItem from '@/components/TaskItem.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
-const sysInfoStore = systemInfoStore()
 const tasks = ref<Task[]>([])
 
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
 
 const operatingSystem = ref('unknown')
+
+const instance = getCurrentInstance()
+const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
 
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
@@ -32,17 +34,9 @@ const navigateToHome = async () => {
     action: 'back',
     data: {
       source: 'index.html'
-    },
-    callback: operatingSystem.value === 'Android' ? 'callbackFromKotlin' : 'callbackFromSwift'
+    }
   }
-  const os = sysInfoStore.getOperatingSystem()
-  if (os === 'Android') {
-    Android.callFromJavascript(JSON.stringify(jsonObject))
-  } else if (os === 'iOS') {
-    window.webkit.messageHandlers.Callback.postMessage(jsonObject)
-  } else {
-    router.push({ path: '/' })
-  }
+  callNativeFunction(jsonObject)
 }
 
 const toggleMenu = () => {

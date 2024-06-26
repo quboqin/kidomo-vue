@@ -2,10 +2,22 @@ import { defineStore } from 'pinia'
 import type { Task } from './task'
 import data from './data.json'
 
+function initOperatingSystem() {
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+
+  if (/android/i.test(userAgent)) {
+    return 'Android'
+  } else if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+    return 'iOS'
+  } else {
+    return 'Unknown'
+  }
+}
+
 export const systemInfoStore = defineStore('systemInfo', {
   state: () => ({
     appName: 'Task Manager',
-    operatingSystem: 'unknown'
+    operatingSystem: initOperatingSystem()
   }),
   actions: {
     async getAppName(): Promise<string> {
