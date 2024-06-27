@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 
-import { systemInfoStore } from '@/stores'
+import { systemInfoStore, useTaskStore } from '@/stores'
 
 window.callbackFromKotlin = function (jsonObject: any) {
   alert(`callbackFromKotlin: ${JSON.stringify(jsonObject)}`)
@@ -8,6 +8,12 @@ window.callbackFromKotlin = function (jsonObject: any) {
 
 window.callbackFromSwift = function (jsonObject: any) {
   alert(`callbackFromSwift:${JSON.stringify(jsonObject)}`)
+}
+
+window.nativeImageData = function (jsonObject: any) {
+  const image = jsonObject.image
+  const taskStore = useTaskStore()
+  taskStore.updateTaskImage(jsonObject.taskId, image)
 }
 
 export function showActionSheet() {
@@ -19,7 +25,9 @@ class WebBridge {
   callNativeFunction(jsonObject: any): void {
     const sysInfoStore = systemInfoStore()
     const os = sysInfoStore.getOperatingSystem()
-    jsonObject['callback'] = os === 'Android' ? 'callbackFromKotlin' : 'callbackFromSwift'
+    if (!jsonObject.callback) {
+      jsonObject['callback'] = os === 'Android' ? 'callbackFromKotlin' : 'callbackFromSwift'
+    }
     if (os === 'Android') {
       Android.callFromJavascript(JSON.stringify(jsonObject))
     } else if (os === 'iOS' && window.webkit) {

@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { EventBus } from '@/utils/event-bus'
+
 import type { Task } from './task'
 import data from './data.json'
 
@@ -83,6 +85,19 @@ export const useTaskStore = defineStore('task', {
       if (taskIndex !== -1) {
         this.tasks[taskIndex].completed = completed
         console.log(`Task ${taskId} completed status updated to ${completed}`)
+      } else {
+        console.error(`Task with ID ${taskId} not found.`)
+      }
+    },
+    async updateTaskImage(taskId: number, image: string): Promise<void> {
+      const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
+      console.log(`Task ${taskId} @ ${taskIndex} completed uploading image`)
+      if (taskIndex !== -1) {
+        console.log(`Task ${taskId} completed uploading image ${image}`)
+        this.tasks[taskIndex].image = image
+        EventBus.emit('taskImageUpdated', {
+          /* payload if any */
+        })
       } else {
         console.error(`Task with ID ${taskId} not found.`)
       }

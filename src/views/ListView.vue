@@ -18,6 +18,8 @@ const showConfirmationDialog = ref(false)
 
 const operatingSystem = ref('unknown')
 
+const instance = getCurrentInstance()
+
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
 })
@@ -33,8 +35,7 @@ const navigateToHome = async () => {
       source: 'index.html'
     }
   }
-  const callNativeFunction =
-    getCurrentInstance()?.appContext.config.globalProperties.$callNativeFunction
+  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
   callNativeFunction(jsonObject)
 }
 

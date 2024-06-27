@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, getCurrentInstance } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useTaskStore } from '@/stores'
+import { EventBus } from '@/utils/event-bus'
 
 import DeleteIcon from '@/components/icons/IconDelete.vue'
 import ConfirmIcon from '@/components/icons/IconConfirm.vue'
@@ -19,6 +20,8 @@ const taskImage = ref('')
 const taskCompleted = ref(false)
 
 const taskStore = useTaskStore()
+
+const instance = getCurrentInstance()
 
 const goBack = () => {
   router.back()
@@ -66,9 +69,30 @@ const fetchAndSetTaskDetails = async () => {
   }
 }
 
-const handleImageUpload = async () => {}
+const handleImageUpload = async () => {
+  const jsonObject = {
+    action: 'camera',
+    data: {
+      taskId: taskId
+    },
+    callback: 'nativeImageData'
+  }
+  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
+  callNativeFunction(jsonObject)
+}
 
-onMounted(fetchAndSetTaskDetails)
+onMounted(() => {
+  EventBus.on('taskImageUpdated', handleTaskImageUpdated)
+  fetchAndSetTaskDetails()
+})
+
+onUnmounted(() => {
+  EventBus.off('taskImageUpdated', handleTaskImageUpdated)
+})
+
+function handleTaskImageUpdated() {
+  fetchAndSetTaskDetails()
+}
 </script>
 
 <template>
@@ -78,7 +102,7 @@ onMounted(fetchAndSetTaskDetails)
       <button v-if="taskId === 0" @click="goBack" class="back-button"><BackIcon /></button>
       <!-- Cross icon when taskId is greater than 0 -->
       <button v-else @click="goBack" class="back-button"><CrossIcon /></button>
-      <h2 class="text-lg font-semibold">Task Detail</h2>
+      <h2 class="text-lg font-semibold">Task Detail {{ taskId }}</h2>
       <div class="flex space-x-2">
         <button
           class="flex items-center justify-center w-6 h-6 text-white bg-blue-500 rounded-full hover:bg-blue-600"
@@ -120,6 +144,7 @@ onMounted(fetchAndSetTaskDetails)
         <button
           for="image-upload"
           class="flex items-center justify-center w-8 h-8 text-white bg-gray-500 rounded-full hover:bg-red-600"
+          @click="handleImageUpload"
         >
           <CameraIcon />
         </button>
