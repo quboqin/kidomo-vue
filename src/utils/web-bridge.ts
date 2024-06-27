@@ -22,7 +22,7 @@ class WebBridge {
     jsonObject['callback'] = os === 'Android' ? 'callbackFromKotlin' : 'callbackFromSwift'
     if (os === 'Android') {
       Android.callFromJavascript(JSON.stringify(jsonObject))
-    } else if (os === 'iOS') {
+    } else if (os === 'iOS' && window.webkit) {
       window.webkit.messageHandlers.Callback.postMessage(jsonObject)
     }
   }

@@ -7,6 +7,7 @@ import DeleteIcon from '@/components/icons/IconDelete.vue'
 import ConfirmIcon from '@/components/icons/IconConfirm.vue'
 import BackIcon from '@/components/icons/IconBack.vue'
 import CrossIcon from '@/components/icons/IconCross.vue'
+import CameraIcon from '@/components/icons/IconCamera.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -14,6 +15,7 @@ const route = useRoute()
 const taskId = +route.params.id
 const taskTitle = ref('')
 const taskDetail = ref('')
+const taskImage = ref('')
 const taskCompleted = ref(false)
 
 const taskStore = useTaskStore()
@@ -54,13 +56,17 @@ const fetchAndSetTaskDetails = async () => {
     const task = await taskStore.fetchTaskById(taskId)
     taskTitle.value = task!.title
     taskDetail.value = task!.detail!
+    taskImage.value = task!.image!
     taskCompleted.value = task!.completed
   } else {
     taskTitle.value = ''
     taskDetail.value = ''
+    taskImage.value = ''
     taskCompleted.value = false
   }
 }
+
+const handleImageUpload = async () => {}
 
 onMounted(fetchAndSetTaskDetails)
 </script>
@@ -108,6 +114,23 @@ onMounted(fetchAndSetTaskDetails)
           v-model="taskDetail"
           placeholder="Enter detail"
         ></textarea>
+      </div>
+      <div class="space-y-4">
+        <!-- Upload Button -->
+        <button
+          for="image-upload"
+          class="flex items-center justify-center w-8 h-8 text-white bg-gray-500 rounded-full hover:bg-red-600"
+        >
+          <CameraIcon />
+        </button>
+        <!-- Image Preview -->
+        <div class="h-10 w-10">
+          <img
+            v-if="taskImage"
+            :src="'data:image/png;base64,' + taskImage"
+            class="h-full w-full object-cover rounded"
+          />
+        </div>
       </div>
     </div>
   </div>

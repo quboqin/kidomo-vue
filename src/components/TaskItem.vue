@@ -16,10 +16,16 @@ const onCheckboxChange = (event: any, taskId: number | undefined) => {
 
 <template>
   <li class="flex justify-between items-center border-b border-gray-200">
-    <RouterLink :to="`/task/${task?.id}`" class="block p-4 hover:bg-gray-100 flex-grow">
-      <div>{{ task?.title }}</div>
-      <div class="text-gray-500 text-sm">{{ task?.detail }}</div>
-    </RouterLink>
+    <!-- Image container -->
+    <div class="flex items-center">
+      <!-- Base64 encoded image -->
+      <img v-if="task?.image" :src="'data:image/png;base64,' + task?.image" class="h-8 w-8 m-2" />
+      <!-- 20x20px is equivalent to 5x5 rem -->
+      <RouterLink :to="`/task/${task?.id}`" class="block hover:bg-gray-100 flex-grow ml-4">
+        <div>{{ task?.title }}</div>
+        <div class="text-gray-500 text-sm">{{ task?.detail }}</div>
+      </RouterLink>
+    </div>
     <span class="p-4">
       <input
         type="checkbox"
