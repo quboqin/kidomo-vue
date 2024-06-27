@@ -95,9 +95,18 @@ export const useTaskStore = defineStore('task', {
       if (taskIndex !== -1) {
         console.log(`Task ${taskId} completed uploading image ${image}`)
         this.tasks[taskIndex].image = image
-        EventBus.emit('taskImageUpdated', {
-          /* payload if any */
-        })
+        EventBus.emit('taskImageUpdated', {})
+      } else {
+        console.error(`Task with ID ${taskId} not found.`)
+      }
+    },
+    async updateTaskLocation(taskId: number, latitude: number, longitude: number): Promise<void> {
+      const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
+      alert(`nativeLocationData: ${taskId} ${taskIndex}`)
+      if (taskIndex !== -1) {
+        this.tasks[taskIndex].latitude = latitude
+        this.tasks[taskIndex].longitude = longitude
+        EventBus.emit('taskLocationUpdated', {})
       } else {
         console.error(`Task with ID ${taskId} not found.`)
       }

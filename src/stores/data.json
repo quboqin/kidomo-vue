@@ -1,5 +1,12 @@
 [
-  { "id": 1, "title": "Buy groceries", "detail": "eat eat eat", "completed": false },
+  {
+    "id": 1,
+    "title": "Buy groceries",
+    "detail": "eat eat eat",
+    "completed": false,
+    "latitude": 37.787359,
+    "longitude": -122.408227
+  },
   {
     "id": 2,
     "title": "Read a book",

@@ -16,6 +16,13 @@ window.nativeImageData = function (jsonObject: any) {
   taskStore.updateTaskImage(jsonObject.taskId, image)
 }
 
+window.nativeLocationData = function (jsonObject: any) {
+  const latitude = jsonObject.latitude
+  const longitude = jsonObject.longitude
+  const taskStore = useTaskStore()
+  taskStore.updateTaskLocation(jsonObject.taskId, latitude, longitude)
+}
+
 export function showActionSheet() {
   Android.showActionSheet(true)
 }

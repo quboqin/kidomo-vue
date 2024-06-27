@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, getCurrentInstance } from 'vue'
+import { ref, onMounted, getCurrentInstance, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
@@ -20,8 +20,15 @@ const operatingSystem = ref('unknown')
 
 const instance = getCurrentInstance()
 
+const listContainer = ref<HTMLElement | null>(null)
+
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
+  await nextTick()
+  if (listContainer.value && listContainer.value.children.length > 0) {
+    const firstItem = listContainer.value.children[0]
+    firstItem.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 })
 
 const navigateToDetail = () => {
@@ -115,7 +122,7 @@ const handleCheckboxChange = async (checked: boolean, taskId: number) => {
     </div>
 
     <div class="task-list pt-16">
-      <ul class="list-none m-0 p-0">
+      <ul ref="listContainer" class="list-none mt-3 mb-3 p-0">
         <TaskItem
           @checkbox-change="handleCheckboxChange"
           v-for="task in tasks"

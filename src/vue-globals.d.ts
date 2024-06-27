@@ -12,6 +12,7 @@ declare global {
     callbackFromSwift: (jsonObject: any) => void
     callbackFromKotlin: (jsonObject: any) => void
     nativeImageData: (data: any) => void
+    nativeLocationData: (data: any) => void
     webkit: any
   }
   const Android: any

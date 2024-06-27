@@ -24,6 +24,10 @@ const onCheckboxChange = (event: any, taskId: number | undefined) => {
       <RouterLink :to="`/task/${task?.id}`" class="block hover:bg-gray-100 flex-grow ml-4">
         <div>{{ task?.title }}</div>
         <div class="text-gray-500 text-sm">{{ task?.detail }}</div>
+        <!-- Location info -->
+        <div v-if="task?.latitude && task?.longitude" class="text-gray-500 text-xs">
+          Location: {{ task.latitude }}, {{ task.longitude }}
+        </div>
       </RouterLink>
     </div>
     <span class="p-4">

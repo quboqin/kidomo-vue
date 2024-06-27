@@ -4,4 +4,6 @@ export interface Task {
   detail?: string
   image?: string
   completed: boolean
+  latitude?: number
+  longitude?: number
 }

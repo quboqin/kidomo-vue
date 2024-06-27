@@ -9,6 +9,7 @@ import ConfirmIcon from '@/components/icons/IconConfirm.vue'
 import BackIcon from '@/components/icons/IconBack.vue'
 import CrossIcon from '@/components/icons/IconCross.vue'
 import CameraIcon from '@/components/icons/IconCamera.vue'
+import LocationIcon from '@/components/icons/IconLocation.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,6 +19,7 @@ const taskTitle = ref('')
 const taskDetail = ref('')
 const taskImage = ref('')
 const taskCompleted = ref(false)
+const taskLocation = ref({ latitude: 0, longitude: 0 })
 
 const taskStore = useTaskStore()
 
@@ -42,6 +44,9 @@ const confirmAction = async () => {
       id: taskId,
       title: taskTitle.value,
       detail: taskDetail.value,
+      image: taskImage.value,
+      latitude: taskLocation.value.latitude,
+      longitude: taskLocation.value.longitude,
       completed: taskCompleted.value
     }
     await taskStore.updateTask(updatedTask)
@@ -60,6 +65,7 @@ const fetchAndSetTaskDetails = async () => {
     taskTitle.value = task!.title
     taskDetail.value = task!.detail!
     taskImage.value = task!.image!
+    taskLocation.value = { latitude: task!.latitude!, longitude: task!.longitude! }
     taskCompleted.value = task!.completed
   } else {
     taskTitle.value = ''
@@ -81,16 +87,34 @@ const handleImageUpload = async () => {
   callNativeFunction(jsonObject)
 }
 
+const getLocation = async () => {
+  const jsonObject = {
+    action: 'location',
+    data: {
+      taskId: taskId
+    },
+    callback: 'nativeLocationData'
+  }
+  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
+  callNativeFunction(jsonObject)
+}
+
 onMounted(() => {
   EventBus.on('taskImageUpdated', handleTaskImageUpdated)
+  EventBus.on('taskLocationUpdated', handleTaskLocationUpdated)
   fetchAndSetTaskDetails()
 })
 
 onUnmounted(() => {
   EventBus.off('taskImageUpdated', handleTaskImageUpdated)
+  EventBus.off('taskLocationUpdated', handleTaskLocationUpdated)
 })
 
 function handleTaskImageUpdated() {
+  fetchAndSetTaskDetails()
+}
+
+function handleTaskLocationUpdated() {
   fetchAndSetTaskDetails()
 }
 </script>
@@ -156,6 +180,19 @@ function handleTaskImageUpdated() {
             class="h-full w-full object-cover rounded"
           />
         </div>
+      </div>
+      <!-- Location Button -->
+      <button
+        class="flex items-center justify-center mt-4 w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+        @click="getLocation"
+      >
+        <LocationIcon />
+        <!-- Replace with your actual location icon component -->
+      </button>
+      <!-- Display Latitude and Longitude -->
+      <div v-if="taskLocation.latitude && taskLocation.longitude" class="mt-2">
+        <p>Latitude: {{ taskLocation.latitude }}</p>
+        <p>Longitude: {{ taskLocation.longitude }}</p>
       </div>
     </div>
   </div>
