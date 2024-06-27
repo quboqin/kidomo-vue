@@ -7,7 +7,10 @@ import legacy from '@vitejs/plugin-legacy'
 
 const shouldUseLegacy = process.env.USE_LEGACY === 'true'
 
-console.log('shouldUseLegacy', shouldUseLegacy)
+console.log(
+  'if you want to load a local package through WebView, please use shouldUseLegacy packaging',
+  shouldUseLegacy
+)
 
 // https://vitejs.dev/config/
 export default defineConfig({

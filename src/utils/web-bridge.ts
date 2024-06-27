@@ -23,12 +23,7 @@ window.nativeLocationData = function (jsonObject: any) {
   taskStore.updateTaskLocation(jsonObject.taskId, latitude, longitude)
 }
 
-export function showActionSheet() {
-  Android.showActionSheet(true)
-}
-
 class WebBridge {
-  // Method to call native function
   callNativeFunction(jsonObject: any): void {
     const sysInfoStore = systemInfoStore()
     const os = sysInfoStore.getOperatingSystem()
@@ -42,7 +37,6 @@ class WebBridge {
     }
   }
 
-  // Method to set header
   setHeader() {
     const header = {
       action: 'set_header',

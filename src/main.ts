@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import '@/assets/tailwind.css'
 
 import { createApp } from 'vue'

@@ -26,6 +26,12 @@ npm install
 npm run dev
 ```
 
+### Type-Check, Compile and Minify for Developing in App Local Environment
+
+```sh
+npm run build-local
+```
+
 ### Type-Check, Compile and Minify for Production
 
 ```sh
