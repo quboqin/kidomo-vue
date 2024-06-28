@@ -18,7 +18,7 @@ const copyDir = async (src, dest) => {
 }
 
 const srcDir = path.resolve('./dist')
-const iOSDestDir = path.resolve('../kidomo-android/kidomo')
+const iOSDestDir = path.resolve('../kidomo-ios/kidomo/dist')
 
 console.time('copy to iOS time')
 copyDir(srcDir, iOSDestDir)
@@ -26,7 +26,7 @@ copyDir(srcDir, iOSDestDir)
   .catch((err) => console.error('Error copying files:', err))
   .finally(() => console.timeEnd('copy to iOS time'))
 
-const androidDestDir = path.resolve('../kidomo-android/app/src/main/assets')
+const androidDestDir = path.resolve('../kidomo-android/app/src/main/assets/dist')
 
 console.time('copy to android time')
 copyDir(srcDir, androidDestDir)
