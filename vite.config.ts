@@ -14,7 +14,7 @@ console.log(
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  ...(shouldUseLegacy ? { base: './' } : {}),
   plugins: [
     // Conditionally include the legacy plugin based on the condition
     ...(shouldUseLegacy
