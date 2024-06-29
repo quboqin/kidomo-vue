@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted, getCurrentInstance, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
-import { useTaskStore } from '@/stores'
-import type { Task } from '@/stores/task'
 import TaskItem from '@/components/TaskItem.vue'
+import { useTaskStore, osInfoStore, OSType } from '@/stores'
+import type { Task } from '@/stores/task'
+import webBridge from '@/utils/web-bridge'
 
 const router = useRouter()
 const taskStore = useTaskStore()
+const osStore = osInfoStore()
 const tasks = ref<Task[]>([])
 
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
 
-const operatingSystem = ref('unknown')
-
-const instance = getCurrentInstance()
+const operatingSystem = computed(() => osStore.getOperatingSystem())
 
 const listContainer = ref<HTMLElement | null>(null)
 
@@ -42,8 +42,7 @@ const navigateToHome = async () => {
       source: 'index.html'
     }
   }
-  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
-  callNativeFunction(jsonObject)
+  webBridge.callNativeFunction(jsonObject)
 }
 
 const toggleMenu = () => {

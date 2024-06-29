@@ -4,31 +4,37 @@ import { EventBus } from '@/utils/event-bus'
 import type { Task } from './task'
 import data from './data.json'
 
+export enum OSType {
+  iOS = 'iOS',
+  Android = 'Android',
+  Unknown = 'Unknown'
+}
+
 function initOperatingSystem() {
   const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
 
   if (/android/i.test(userAgent)) {
-    return 'Android'
+    return OSType.Android
   } else if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
-    return 'iOS'
+    return OSType.iOS
   } else {
-    return 'Unknown'
+    return OSType.Unknown
   }
 }
 
-export const systemInfoStore = defineStore('systemInfo', {
+export const osInfoStore = defineStore('osInfo', {
   state: () => ({
-    appName: 'Task Manager',
+    appName: 'kidomo',
     operatingSystem: initOperatingSystem()
   }),
   actions: {
     async getAppName(): Promise<string> {
       return this.appName
     },
-    getOperatingSystem(): string {
+    getOperatingSystem(): OSType {
       return this.operatingSystem
     },
-    async setOperatingSystem(os: string): Promise<void> {
+    async setOperatingSystem(os: OSType): Promise<void> {
       this.operatingSystem = os
     }
   }
@@ -40,7 +46,6 @@ export const useTaskStore = defineStore('task', {
   }),
   actions: {
     saveTasks() {
-      // Save tasks to local storage
       localStorage.setItem('tasks', JSON.stringify(this.tasks))
     },
     async getAllTasks(): Promise<Task[]> {
@@ -51,11 +56,9 @@ export const useTaskStore = defineStore('task', {
     },
     async appendTask(task: Task): Promise<void> {
       this.tasks.push(task)
-      this.saveTasks()
     },
     async clearAllTasks(): Promise<void> {
       this.tasks = []
-      this.saveTasks()
     },
     async calculateNewId(): Promise<number> {
       if (this.tasks.length === 0) {
@@ -81,18 +84,15 @@ export const useTaskStore = defineStore('task', {
           console.error('Task not found, cannot update')
         }
       }
-      this.saveTasks()
       return Promise.resolve()
     },
     async deleteTaskById(taskId: number): Promise<void> {
       this.tasks = this.tasks.filter((task) => task.id !== taskId)
-      this.saveTasks()
     },
     async updateTaskCompletedStatus(taskId: number, completed: boolean): Promise<void> {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
       if (taskIndex !== -1) {
         this.tasks[taskIndex].completed = completed
-        this.saveTasks()
         console.log(`Task ${taskId} completed status updated to ${completed}`)
       } else {
         console.error(`Task with ID ${taskId} not found.`)
@@ -104,7 +104,6 @@ export const useTaskStore = defineStore('task', {
       if (taskIndex !== -1) {
         console.log(`Task ${taskId} completed uploading image ${image}`)
         this.tasks[taskIndex].image = image
-        this.saveTasks()
         EventBus.emit('taskImageUpdated', {})
       } else {
         console.error(`Task with ID ${taskId} not found.`)
@@ -116,7 +115,6 @@ export const useTaskStore = defineStore('task', {
       if (taskIndex !== -1) {
         this.tasks[taskIndex].latitude = latitude
         this.tasks[taskIndex].longitude = longitude
-        this.saveTasks()
         EventBus.emit('taskLocationUpdated', {})
       } else {
         console.error(`Task with ID ${taskId} not found.`)

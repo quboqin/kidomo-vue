@@ -26,7 +26,9 @@ npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Developing in App Local Environment
+### Type-Check, Compile for Developing with App Developing
+
+This script will copy the dist folder into kidomo-android and kidomo-ios
 
 ```sh
 npm run build-local

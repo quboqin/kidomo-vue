@@ -4,8 +4,6 @@ import DetailView from '../views/DetailView.vue'
 
 const shouldUseLegacy = import.meta.env.BASE_URL === './'
 
-console.log(import.meta.env.BASE_URL)
-
 const router = createRouter({
   history: shouldUseLegacy
     ? createWebHashHistory(import.meta.env.BASE_URL)

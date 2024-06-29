@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useTaskStore } from '@/stores'
 import { EventBus } from '@/utils/event-bus'
+import webBridge from '@/utils/web-bridge'
 
 import DeleteIcon from '@/components/icons/IconDelete.vue'
 import ConfirmIcon from '@/components/icons/IconConfirm.vue'
@@ -23,34 +24,22 @@ const taskLocation = ref({ latitude: 0, longitude: 0 })
 
 const taskStore = useTaskStore()
 
-const instance = getCurrentInstance()
-
 const goBack = () => {
   router.back()
 }
 
 const confirmAction = async () => {
-  if (taskId === 0) {
-    const newId = await taskStore.calculateNewId()
-    const newTask = {
-      id: newId,
-      title: taskTitle.value,
-      detail: taskDetail.value,
-      completed: false
-    }
-    await taskStore.appendTask(newTask)
-  } else {
-    const updatedTask = {
-      id: taskId,
-      title: taskTitle.value,
-      detail: taskDetail.value,
-      image: taskImage.value,
-      latitude: taskLocation.value.latitude,
-      longitude: taskLocation.value.longitude,
-      completed: taskCompleted.value
-    }
-    await taskStore.updateTask(updatedTask)
+  const updatedTask = {
+    id: taskId,
+    title: taskTitle.value,
+    detail: taskDetail.value,
+    image: taskImage.value,
+    latitude: taskLocation.value.latitude,
+    longitude: taskLocation.value.longitude,
+    completed: taskCompleted.value
   }
+  await taskStore.updateTask(updatedTask)
+
   goBack()
 }
 
@@ -83,8 +72,7 @@ const handleImageUpload = async () => {
     },
     callback: 'nativeImageData'
   }
-  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
-  callNativeFunction(jsonObject)
+  webBridge.callNativeFunction(jsonObject)
 }
 
 const getLocation = async () => {
@@ -95,8 +83,7 @@ const getLocation = async () => {
     },
     callback: 'nativeLocationData'
   }
-  const callNativeFunction = instance?.appContext.config.globalProperties.$callNativeFunction
-  callNativeFunction(jsonObject)
+  webBridge.callNativeFunction(jsonObject)
 }
 
 onMounted(() => {
