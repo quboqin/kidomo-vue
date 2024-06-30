@@ -6,7 +6,7 @@ import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
 import TaskItem from '@/components/TaskItem.vue'
-import { useTaskStore, osInfoStore, OSType } from '@/stores'
+import { useTaskStore, osInfoStore } from '@/stores'
 import type { Task } from '@/stores/task'
 import webBridge from '@/utils/web-bridge'
 

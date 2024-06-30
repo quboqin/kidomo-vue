@@ -45,8 +45,13 @@ export const useTaskStore = defineStore('task', {
     tasks: JSON.parse(localStorage.getItem('tasks') || JSON.stringify(data)) as Task[]
   }),
   actions: {
-    saveTasks() {
-      localStorage.setItem('tasks', JSON.stringify(this.tasks))
+    async saveTasks() {
+      try {
+        console.log('Tasks saved to local storage')
+        await localStorage.setItem('tasks', JSON.stringify(this.tasks))
+      } catch (error) {
+        console.error('Error saving tasks to local storage', error)
+      }
     },
     async getAllTasks(): Promise<Task[]> {
       return this.tasks
@@ -102,7 +107,7 @@ export const useTaskStore = defineStore('task', {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
       console.log(`Task ${taskId} @ ${taskIndex} completed uploading image`)
       if (taskIndex !== -1) {
-        console.log(`Task ${taskId} completed uploading image ${image}`)
+        console.log(`Task ${taskId} completed uploading image`)
         this.tasks[taskIndex].image = image
         EventBus.emit('taskImageUpdated', {})
       } else {
@@ -111,8 +116,8 @@ export const useTaskStore = defineStore('task', {
     },
     async updateTaskLocation(taskId: number, latitude: number, longitude: number): Promise<void> {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
-      alert(`nativeLocationData: ${taskId} ${taskIndex}`)
       if (taskIndex !== -1) {
+        console.log(`Task ${taskId} completed updating location`)
         this.tasks[taskIndex].latitude = latitude
         this.tasks[taskIndex].longitude = longitude
         EventBus.emit('taskLocationUpdated', {})

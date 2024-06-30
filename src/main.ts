@@ -15,8 +15,8 @@ app.use(router)
 app.use(webBridge)
 
 const taskStore = useTaskStore()
-taskStore.$subscribe(() => {
-  taskStore.saveTasks()
+taskStore.$subscribe(async () => {
+  await taskStore.saveTasks()
 })
 
 app.mount('#app')
