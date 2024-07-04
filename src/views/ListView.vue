@@ -54,6 +54,14 @@ const clearAllTasks = () => {
   showConfirmationDialog.value = true
 }
 
+const navigateToSignIn = () => {
+  router.push({ path: '/signin' })
+}
+
+const navigateToSignUp = () => {
+  router.push({ path: '/signup' })
+}
+
 const confirmClearAllTasks = async () => {
   await taskStore.clearAllTasks()
   tasks.value = []
@@ -89,7 +97,18 @@ const handleCheckboxChange = async (checked: boolean, taskId: number) => {
       >
         Clear All Tasks
       </a>
-      <!-- Add more menu items here -->
+      <a
+        @click="navigateToSignIn"
+        class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white"
+      >
+        Sign In
+      </a>
+      <a
+        @click="navigateToSignUp"
+        class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white"
+      >
+        Sign Up
+      </a>
     </div>
 
     <div
