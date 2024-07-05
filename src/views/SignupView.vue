@@ -53,7 +53,7 @@ const password = ref('')
 
 const signup = async () => {
   // Implement your signup logic here
-  await authStore.login(username.value, password.value)
+  await authStore.singUp(username.value, password.value)
 }
 
 const goBack = () => {

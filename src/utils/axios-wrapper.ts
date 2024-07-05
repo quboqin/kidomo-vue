@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { useUserStore } from '@/stores'
+import { useAuthStore } from '@/stores'
 
 const port = import.meta.env.VITE_PORT
 const url = import.meta.env.VITE_BASE_URL
@@ -8,9 +8,13 @@ axios.defaults.baseURL = port ? `${url}:${port}` : `${url}`
 axios.defaults.timeout = import.meta.env.VITE_TIMEOUT ? +import.meta.env.VITE_TIMEOUT : 5000
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 
+export async function getToken() {
+  return await useAuthStore().token
+}
+
 axios.interceptors.request.use(
   async (config) => {
-    const jwtToken = await useUserStore().user?.jwtToken
+    const jwtToken = await useAuthStore().token
     if (jwtToken) {
       config.headers.Authorization = `Bearer ${jwtToken}`
     }

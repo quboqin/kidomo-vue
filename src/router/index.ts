@@ -1,4 +1,6 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { getToken } from '@/utils/axios-wrapper'
+
 import ListView from '../views/ListView.vue'
 import DetailView from '../views/DetailView.vue'
 import SigninView from '../views/SigninView.vue'
@@ -11,11 +13,22 @@ const router = createRouter({
     ? createWebHashHistory(import.meta.env.BASE_URL)
     : createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: ListView },
-    { path: '/task/:id', component: DetailView },
+    { path: '/', component: ListView, meta: { requiresAuth: true } },
+    { path: '/task/:id', component: DetailView, meta: { requiresAuth: true } },
     { path: '/signin', component: SigninView },
     { path: '/signup', component: SignupView }
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  const token = await getToken()
+  console.log(token)
+  if (!token && to.matched.some((record) => record.meta.requiresAuth)) {
+    return next({
+      path: '/signup'
+    })
+  }
+  return next()
 })
 
 export default router
