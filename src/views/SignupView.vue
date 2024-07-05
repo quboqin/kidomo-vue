@@ -41,6 +41,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { useAuthStore } from '@/stores/auth.store'
+const authStore = useAuthStore()
+
 import BackIcon from '@/components/icons/IconBack.vue'
 
 const router = useRouter()
@@ -48,9 +51,9 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 
-const signup = () => {
+const signup = async () => {
   // Implement your signup logic here
-  console.log('Signup attempt with:', username.value, password.value)
+  await authStore.login(username.value, password.value)
 }
 
 const goBack = () => {

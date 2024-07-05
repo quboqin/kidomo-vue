@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 
 import BackIcon from '@/components/icons/IconBack.vue'
 
@@ -52,36 +51,7 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 
-const login = async () => {
-  try {
-    const response = await axios.post(
-      'http://localhost:8000/users',
-      {
-        email: username.value,
-        password: password.value
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-    const data = response.data.data
-    console.log(data)
-    // Assuming the token is returned in response.data.token
-    if (data.token) {
-      // Save the token to localStorage
-      localStorage.setItem('userToken', data.token)
-      console.log('Token saved:', data.token)
-      // Redirect user or perform other actions after successful login
-    } else {
-      console.error('Token not found in response')
-    }
-  } catch (error) {
-    console.error(error)
-    // Handle error
-  }
-}
+const login = async () => {}
 
 const goBack = () => {
   router.back()
