@@ -44,6 +44,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { useAuthStore } from '@/stores/auth.store'
+const authStore = useAuthStore()
+
 import BackIcon from '@/components/icons/IconBack.vue'
 
 const router = useRouter()
@@ -51,7 +54,10 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 
-const login = async () => {}
+const login = async () => {
+  await authStore.signIn(username.value, password.value)
+  router.push({ path: '/' })
+}
 
 const goBack = () => {
   router.back()

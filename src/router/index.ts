@@ -25,7 +25,7 @@ router.beforeEach(async (to, from, next) => {
   console.log(token)
   if (!token && to.matched.some((record) => record.meta.requiresAuth)) {
     return next({
-      path: '/signup'
+      path: '/signin'
     })
   }
   return next()

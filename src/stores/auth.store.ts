@@ -12,6 +12,9 @@ export const useAuthStore = defineStore('auth', {
     token: null as string | null,
     refreshTokenTimeout: null as NodeJS.Timeout | null
   }),
+  getters: {
+    isLoggedIn: (state) => state.user !== null && state.token !== null
+  },
   actions: {
     async singUp(username: string, password: string) {
       const data: {
@@ -33,7 +36,6 @@ export const useAuthStore = defineStore('auth', {
         email: username,
         password
       })
-      this.user = data?.user ?? null
       this.token = data?.token ?? null
       // this.startRefreshTokenTimer()
     },
@@ -41,6 +43,7 @@ export const useAuthStore = defineStore('auth', {
       result('post', `/users/logout`, { credentials: 'include' })
       // this.stopRefreshTokenTimer()
       this.user = null
+      this.token = null
     }
     // async refreshToken() {
     //   this.user = await request('post', `/refresh-token`, { credentials: 'include' })

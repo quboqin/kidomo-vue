@@ -32,6 +32,9 @@
         </div>
         <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Signup</button>
       </form>
+      <button @click="goToSignin" class="w-full bg-blue-500 text-white p-2 rounded-md mt-4">
+        Go to Signin
+      </button>
       <button class="w-full bg-red-500 text-white p-2 rounded-md mt-4">Signup with Google</button>
     </div>
   </div>
@@ -52,8 +55,12 @@ const username = ref('')
 const password = ref('')
 
 const signup = async () => {
-  // Implement your signup logic here
   await authStore.singUp(username.value, password.value)
+  router.push({ path: '/' })
+}
+
+const goToSignin = () => {
+  router.push('/signin')
 }
 
 const goBack = () => {

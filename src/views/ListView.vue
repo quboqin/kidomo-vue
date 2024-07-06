@@ -6,13 +6,14 @@ import MoreIcon from '@/components/icons/IconMore.vue'
 import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
 import TaskItem from '@/components/TaskItem.vue'
-import { useTaskStore, osInfoStore } from '@/stores'
+import { useTaskStore, osInfoStore, useAuthStore } from '@/stores'
 import type { Task } from '@/stores/task'
 import webBridge from '@/utils/web-bridge'
 
 const router = useRouter()
 const taskStore = useTaskStore()
 const osStore = osInfoStore()
+const authStore = useAuthStore()
 const tasks = ref<Task[]>([])
 
 const showMenu = ref(false)
@@ -22,6 +23,8 @@ const operatingSystem = computed(() => osStore.getOperatingSystem())
 
 const listContainer = ref<HTMLElement | null>(null)
 
+const isLoggedIn = computed(() => authStore.isLoggedIn)
+
 onMounted(async () => {
   tasks.value = await taskStore.getAllTasks()
   await nextTick()
@@ -30,6 +33,11 @@ onMounted(async () => {
     firstItem.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 })
+
+const logout = async () => {
+  // await taskStore.clearAllTasks()
+  router.push({ path: '/signin' })
+}
 
 const navigateToDetail = () => {
   router.push({ path: '/task/0' })
@@ -108,6 +116,13 @@ const handleCheckboxChange = async (checked: boolean, taskId: number) => {
         class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white"
       >
         Sign Up
+      </a>
+      <a
+        v-if="isLoggedIn"
+        @click="logout"
+        class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white"
+      >
+        Logout
       </a>
     </div>
 
