@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import webBridge from './utils/web-bridge'
-import { useTaskStore } from './stores'
+import { useTaskStore, useAuthStore } from './stores'
 
 const app = createApp(App)
 
@@ -17,6 +17,11 @@ app.use(webBridge)
 const taskStore = useTaskStore()
 taskStore.$subscribe(async () => {
   await taskStore.saveTasks()
+})
+
+const authStore = useAuthStore()
+authStore.$subscribe(async () => {
+  await authStore.saveToken()
 })
 
 app.mount('#app')

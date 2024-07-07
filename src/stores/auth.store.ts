@@ -9,13 +9,23 @@ export interface IUser {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: {} as IUser | null,
-    token: null as string | null,
+    token: localStorage.getItem('token') ?? null,
     refreshTokenTimeout: null as NodeJS.Timeout | null
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null && state.token !== null
   },
   actions: {
+    async saveToken() {
+      try {
+        console.log('token saved to local storage')
+        if (this.token) {
+          localStorage.setItem('token', this.token)
+        }
+      } catch (error) {
+        console.error('Error saving token to local storage', error)
+      }
+    },
     async singUp(username: string, password: string) {
       const data: {
         user: IUser
