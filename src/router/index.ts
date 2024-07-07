@@ -22,7 +22,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const token = await getToken()
-  console.log(token)
   if (!token && to.matched.some((record) => record.meta.requiresAuth)) {
     return next({
       path: '/signin'

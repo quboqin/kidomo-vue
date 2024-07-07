@@ -35,6 +35,7 @@ onMounted(async () => {
 })
 
 const logout = async () => {
+  await authStore.logout()
   // await taskStore.clearAllTasks()
   router.push({ path: '/signin' })
 }

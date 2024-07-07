@@ -37,10 +37,14 @@ export const useAuthStore = defineStore('auth', {
         password
       })
       this.token = data?.token ?? null
+      await this.fetchUser()
       // this.startRefreshTokenTimer()
     },
+    async fetchUser() {
+      this.user = await result('get', `/users`)
+    },
     async logout() {
-      result('post', `/users/logout`, { credentials: 'include' })
+      await result('put', `/users/logout`, this.user)
       // this.stopRefreshTokenTimer()
       this.user = null
       this.token = null
