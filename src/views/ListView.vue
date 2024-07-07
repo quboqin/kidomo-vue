@@ -26,7 +26,7 @@ const listContainer = ref<HTMLElement | null>(null)
 const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 onMounted(async () => {
-  tasks.value = await taskStore.getAllTasks()
+  tasks.value = await taskStore.fetchTasks()
   await nextTick()
   if (listContainer.value && listContainer.value.children.length > 0) {
     const firstItem = listContainer.value.children[0]
@@ -36,7 +36,7 @@ onMounted(async () => {
 
 const logout = async () => {
   await authStore.logout()
-  // await taskStore.clearAllTasks()
+  await taskStore.clearAllLocalTasks()
   router.push({ path: '/signin' })
 }
 
