@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import type { Task } from '@/stores/task'
+import type { ITask } from '@/stores/task'
 
 defineProps({
-  task: Object as () => Task
+  task: Object as () => ITask
 })
 
 const emit = defineEmits(['checkbox-change'])
 
-const onCheckboxChange = (event: any, taskId: number | undefined) => {
+const onCheckboxChange = (event: any, taskId: string | undefined) => {
   const target = event.target as HTMLInputElement
   emit('checkbox-change', target.checked, taskId)
 }
@@ -22,8 +22,8 @@ const onCheckboxChange = (event: any, taskId: number | undefined) => {
       <img v-if="task?.image" :src="'data:image/png;base64,' + task?.image" class="h-8 w-8 m-2" />
       <!-- 20x20px is equivalent to 5x5 rem -->
       <RouterLink :to="`/task/${task?.id}`" class="block hover:bg-gray-100 flex-grow ml-4">
-        <div>{{ task?.title }}</div>
-        <div class="text-gray-500 text-sm">{{ task?.detail }}</div>
+        <div>{{ task?.name }}</div>
+        <div class="text-gray-500 text-sm">{{ task?.description }}</div>
         <!-- Location info -->
         <div v-if="task?.latitude && task?.longitude" class="text-gray-500 text-xs">
           Location: {{ task.latitude }}, {{ task.longitude }}
@@ -34,7 +34,7 @@ const onCheckboxChange = (event: any, taskId: number | undefined) => {
       <input
         type="checkbox"
         class="form-checkbox h-6 w-6 text-green-500"
-        :checked="task?.completed"
+        :checked="task?.is_solved"
         @change="onCheckboxChange($event, task?.id)"
       />
     </span>

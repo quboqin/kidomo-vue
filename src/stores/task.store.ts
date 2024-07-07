@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
+import { generateObjectId } from '@/utils/mongo-objectid-generator'
 import { EventBus } from '@/utils/event-bus'
 
-import type { Task } from './task'
+import type { ITask } from './task'
 import data from './data.json'
 
 export const useTaskStore = defineStore('task', {
   state: () => ({
-    tasks: JSON.parse(localStorage.getItem('tasks') || JSON.stringify(data)) as Task[]
+    tasks: JSON.parse(localStorage.getItem('tasks') || JSON.stringify(data)) as ITask[]
   }),
   actions: {
     async saveTasks() {
@@ -17,32 +18,21 @@ export const useTaskStore = defineStore('task', {
         console.error('Error saving tasks to local storage', error)
       }
     },
-    async getAllTasks(): Promise<Task[]> {
+    async getAllTasks(): Promise<ITask[]> {
       return this.tasks
     },
-    async fetchTaskById(id: number): Promise<Task | undefined> {
+    async fetchTaskById(id: string): Promise<ITask | undefined> {
       return this.tasks.find((task) => task.id === id)
     },
-    async appendTask(task: Task): Promise<void> {
+    async appendTask(task: ITask): Promise<void> {
       this.tasks.push(task)
     },
     async clearAllTasks(): Promise<void> {
       this.tasks = []
     },
-    async calculateNewId(): Promise<number> {
-      if (this.tasks.length === 0) {
-        return 1 // Start IDs from 1 if the array is empty
-      } else {
-        const maxId = this.tasks.reduce(
-          (max, task) => (task.id > max ? task.id : max),
-          this.tasks[0].id
-        )
-        return maxId + 1
-      }
-    },
-    async updateTask(taskToUpdate: Task): Promise<void> {
-      if (taskToUpdate.id === 0) {
-        const newId = await this.calculateNewId()
+    async updateTask(taskToUpdate: ITask): Promise<void> {
+      if (taskToUpdate.id === '0') {
+        const newId = generateObjectId()
         const newTask = { ...taskToUpdate, id: newId }
         this.tasks.push(newTask)
       } else {
@@ -55,19 +45,19 @@ export const useTaskStore = defineStore('task', {
       }
       return Promise.resolve()
     },
-    async deleteTaskById(taskId: number): Promise<void> {
+    async deleteTaskById(taskId: string): Promise<void> {
       this.tasks = this.tasks.filter((task) => task.id !== taskId)
     },
-    async updateTaskCompletedStatus(taskId: number, completed: boolean): Promise<void> {
+    async updateTaskCompletedStatus(taskId: string, completed: boolean): Promise<void> {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
       if (taskIndex !== -1) {
-        this.tasks[taskIndex].completed = completed
+        this.tasks[taskIndex].is_solved = completed
         console.log(`Task ${taskId} completed status updated to ${completed}`)
       } else {
         console.error(`Task with ID ${taskId} not found.`)
       }
     },
-    async updateTaskImage(taskId: number, image: string): Promise<void> {
+    async updateTaskImage(taskId: string, image: string): Promise<void> {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
       console.log(`Task ${taskId} @ ${taskIndex} completed uploading image`)
       if (taskIndex !== -1) {
@@ -78,7 +68,7 @@ export const useTaskStore = defineStore('task', {
         console.error(`Task with ID ${taskId} not found.`)
       }
     },
-    async updateTaskLocation(taskId: number, latitude: number, longitude: number): Promise<void> {
+    async updateTaskLocation(taskId: string, latitude: number, longitude: number): Promise<void> {
       const taskIndex = this.tasks.findIndex((task) => task.id === taskId)
       if (taskIndex !== -1) {
         console.log(`Task ${taskId} completed updating location`)

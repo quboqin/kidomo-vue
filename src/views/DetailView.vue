@@ -15,7 +15,7 @@ import LocationIcon from '@/components/icons/IconLocation.vue'
 const router = useRouter()
 const route = useRoute()
 
-const taskId = +route.params.id
+const taskId = route.params.id as string
 const taskTitle = ref('')
 const taskDetail = ref('')
 const taskImage = ref('')
@@ -31,12 +31,14 @@ const goBack = () => {
 const confirmAction = async () => {
   const updatedTask = {
     id: taskId,
-    title: taskTitle.value,
-    detail: taskDetail.value,
+    name: taskTitle.value,
+    description: taskDetail.value,
+    start_time: +new Date(),
+    duration: 900000,
     image: taskImage.value,
     latitude: taskLocation.value.latitude,
     longitude: taskLocation.value.longitude,
-    completed: taskCompleted.value
+    is_solved: taskCompleted.value
   }
   await taskStore.updateTask(updatedTask)
 
@@ -49,13 +51,13 @@ const deleteAction = async () => {
 }
 
 const fetchAndSetTaskDetails = async () => {
-  if (taskId !== 0) {
+  if (taskId !== '0') {
     const task = await taskStore.fetchTaskById(taskId)
-    taskTitle.value = task!.title
-    taskDetail.value = task!.detail!
+    taskTitle.value = task!.name
+    taskDetail.value = task!.description!
     taskImage.value = task!.image!
     taskLocation.value = { latitude: task!.latitude!, longitude: task!.longitude! }
-    taskCompleted.value = task!.completed
+    taskCompleted.value = task!.is_solved
   } else {
     taskTitle.value = ''
     taskDetail.value = ''
@@ -110,7 +112,7 @@ function handleTaskLocationUpdated() {
   <div>
     <div class="flex items-center justify-between p-4 bg-gray-200">
       <!-- Back arrow icon when taskId is 0 -->
-      <button v-if="taskId === 0" @click="goBack" class="back-button"><BackIcon /></button>
+      <button v-if="taskId === ''" @click="goBack" class="back-button"><BackIcon /></button>
       <!-- Cross icon when taskId is greater than 0 -->
       <button v-else @click="goBack" class="back-button"><CrossIcon /></button>
       <h2 class="text-lg font-semibold">Task Detail {{ taskId }}</h2>

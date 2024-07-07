@@ -1,9 +1,12 @@
-export interface Task {
-  id: number
-  title: string
-  detail?: string
+export interface ITask {
+  id: string
+  name: string
+  description: string
+  start_time: number
+  duration: number
+  is_solved: boolean
+  notification_id?: number
   image?: string
-  completed: boolean
   latitude?: number
   longitude?: number
 }

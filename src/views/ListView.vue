@@ -7,14 +7,14 @@ import AddIcon from '@/components/icons/IconAdd.vue'
 import HomeIcon from '@/components/icons/IconHome.vue'
 import TaskItem from '@/components/TaskItem.vue'
 import { useTaskStore, osInfoStore, useAuthStore } from '@/stores'
-import type { Task } from '@/stores/task'
+import type { ITask } from '@/stores/task'
 import webBridge from '@/utils/web-bridge'
 
 const router = useRouter()
 const taskStore = useTaskStore()
 const osStore = osInfoStore()
 const authStore = useAuthStore()
-const tasks = ref<Task[]>([])
+const tasks = ref<ITask[]>([])
 
 const showMenu = ref(false)
 const showConfirmationDialog = ref(false)
@@ -41,7 +41,8 @@ const logout = async () => {
 }
 
 const navigateToDetail = () => {
-  router.push({ path: '/task/0' })
+  const id = '0'
+  router.push({ path: `/task/${id}` })
 }
 
 const navigateToHome = async () => {
@@ -77,7 +78,7 @@ const confirmClearAllTasks = async () => {
   showConfirmationDialog.value = false
 }
 
-const handleCheckboxChange = async (checked: boolean, taskId: number) => {
+const handleCheckboxChange = async (checked: boolean, taskId: string) => {
   console.log(`Checkbox for task ${taskId} changed to ${checked}`)
   await taskStore.updateTaskCompletedStatus(taskId, checked)
 }
