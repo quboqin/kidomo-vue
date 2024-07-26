@@ -5,11 +5,6 @@ on:
     branches:
       - prod
       - test
-    paths-ignore:
-      - '.github/**' # Ignore changes in other workflows
-      - '!.github/workflows/deploy.yml'
-      - 'tests/**'
-      - '**.md'
 
 env:
   AWS_REGION: 'us-east-1'
