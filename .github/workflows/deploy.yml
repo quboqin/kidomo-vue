@@ -5,6 +5,11 @@ on:
     branches:
       - prod
       - test
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/deploy.yml'
+      - 'tests/**'
+      - '**.md'
 
 env:
   AWS_REGION: 'us-east-1'
@@ -57,7 +62,7 @@ jobs:
 
       - name: Sync files to S3
         run: |
-          aws s3 sync dist/ s3://${{ env.S3_BUCKET_NAME }} --delete
+          aws s3 sync dist s3://${{ env.S3_BUCKET_NAME }} --delete
 
       - name: Invalidate CloudFront cache
         run: |
