@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: {} as IUser | null,
     token: localStorage.getItem('token') ?? null,
-    refreshTokenTimeout: null as NodeJS.Timeout | null
+    refreshTokenTimeout: null as ReturnType<typeof setTimeout> | null
   }),
   getters: {
     isLoggedIn: (state) => state.user !== null && state.token !== null
