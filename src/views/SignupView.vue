@@ -9,7 +9,7 @@
         <MoreIcon />
       </button>
     </header>
-    <div class="bg-gray-100 p-8 w-96">
+    <div class="bg-gray-100 p-8 w-96 mt-96">
       <h2 class="text-2xl font-bold mb-4">Signup</h2>
       <form @submit.prevent="signup">
         <div class="mb-4">
